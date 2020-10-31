@@ -16,7 +16,11 @@
         <!-- TODO show errors from form validation -->
         <div class="alert alert-danger" v-show="errors.length > 0">
             <ul>
-                <li v-for="error in errors">{{ error }}</li>
+                <!-- v-bind:key="error added so that when something in a list changes, Vue can identify exactly which piece of HTML needs to change, and only change that" -->
+                <!-- Helps Vue be more efficient, essentially. If there was a lot of rows it would be laggy without -->
+                <li v-for="error in errors" v-bind:key="error">
+                    {{ error }}
+                </li>
             </ul>
         </div>
 
@@ -51,12 +55,15 @@
                    <!-- TODO create table rows 
                    Each row will have a checkbox, bound to the app's data 
                    When the checkbox is checked/unchecked, the student will be signed in/out -->
-
-                   <tr v-for="student in students">
+                   <tr v-for="student in students" v-bind:key="student.starID" v-bind:class="{ present: student.present, absent: !student.present }"> 
+                       <!-- Another way to do this is using a ternary operator ...v-bind:class=" student.present ? 'present' : 'absent' " -->
+                       <!-- v-bind directive. Bind the class attribute of the HTML element. Value here will be an object. In dev tools you'll see class being added to the student clicked in the tr  -->
+                       <!-- v-bind will be seen the same if written as :key="student.starID" :class="{ present: student.present, absent: !student.present } -->
                        <td>{{ student.name }}</td>
                        <td>{{ student.starID }}</td>
                        <td>
-                           <input type="checkbox" v-model="student-present">
+                           <!-- v-on  shortcut can be replaced with an @ for example @:change="arrivedOrLeft(student)" -->
+                           <input type="checkbox" v-model="student.present" v-on:change="arrivedOrLeft(student)">
                        </td>
                    </tr>
 
@@ -66,6 +73,14 @@
 
 
         <!-- TODO show a message when student arrives or leaves  -->
+        <div v-show="mostRecentStudent.name">
+            <div v-if="mostRecentStudent.present" class="alert alert-success">
+                Welcome, {{mostRecentStudent.name}}
+            </div>
+            <div v-else class="alert alert-info">
+                Goodbye, {{mostRecentStudent.name}}. See you later!
+            </div>
+        </div>
 
 
     </div>
@@ -83,7 +98,8 @@
                     { name: 'A Student', starID: 'aa1234aa', present: false},
                     { name: 'B Student', starID: 'bb1234bb', present: false}
                 ],
-                errors: []
+                errors: [],
+                mostRecentStudent:[]
             },
             methods: {
                 addStudents() {
@@ -137,6 +153,9 @@
                             this.newStarID = ''
                     }
 
+                }, 
+                arrivedOrLeft(student) {
+                    this.mostRecentStudent = student
                 }
             }
         })

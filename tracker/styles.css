@@ -1,4 +1,6 @@
 #records {
-    max-height: 250px;
+    /* Sets the max height of the records */
+    max-height: 250px; 
+    /* If the amount of records exceed the size, then user can scoll through it */
     overflow: scroll;
 }
