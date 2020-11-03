@@ -65,13 +65,23 @@
                     <!-- TODO v-model and v-bind media -->
                     <!-- Set the value of the radio button with v-bind, v-model all the radio buttons you want to work together first -->
                     <input id="media1" class="form-check-input" type="radio" v-bind:value="media.traditional" v-model="medium">
-                    <label class="form-check-label" for="media1">  {{ media.traditional}} <!--TODO Display text -->  </label>
+                    <label class="form-check-label" for="media1">  {{ media.traditional }} <!--TODO Display text -->  </label>
                 </div>
 
                 <div class="form-check-inline">
                     <!-- TODO v-model and v-bind media -->
                     <input id="media2" class="form-check-input" type="radio" v-bind:value="media.digital" v-model="medium">
-                    <label class="form-check-label" for="media2">  {{ media.digital}} <!-- TODO Display text -->  </label>
+                    <label class="form-check-label" for="media2">  {{ media.digital }} <!-- TODO Display text -->  </label>
+                </div>
+
+                <div class="form-group">
+                    <input id="completed" type="checkbox" v-model="complete">
+                    <label class="form-label" for="completed">Completed?</label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="noteInput">Notes:</label>
+                    <textarea id="noteInput" class="form-control" v-model="note"></textarea>
                 </div>
 
                 <div>
@@ -96,13 +106,17 @@
                             <th>How many hours?</th>
                             <th>Type</th>
                             <th>Media</th>
+                            <th>Completed</th>
+                            <th>Notes</th>
                         </tr>
                         <!-- TODO use v-for to create one table row for each activity record -->
-                        <tr v-for="record in activityRecords">
+                        <tr v-for="record in activityRecords" v-bind:class="{ guitarScales: types[0], guitarChords: types[1], guitarSweeps: types[2] }">
                             <td>{{ record.date | shortDate }}</td>
-                            <td>{{ record.hours }}</td>
+                            <td>{{ record.hours | decimalPlaces(2) }}</td>
                             <td>{{ record.type }}</td>
                             <td>{{ record.medium }}</td>
+                            <td>{{ record.completed }}</td>
+                            <td>{{ record.notes }}</td>
                         </tr>
                     </table>
                 </div>
@@ -139,6 +153,8 @@
             hours: 1,
             type: 'Sweep Picking', // If this is empty then nothing is selected 
             medium: '', // If traditional was here it would be displayed
+            complete: false,
+            note: '',
 
             // Array of activity records
             activityRecords: [],
@@ -163,6 +179,13 @@
             },
             shortDate(date) { // Apply this filter to make the date simpler MM/DD/YYYY
                 return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC' }).format(date)
+            },
+            decimalPlaces: function(price, numberOfDecimalPlaces) { // Apply this filter to set how many decimal places a number has
+                let formattedPrice = price.toFixed(numberOfDecimalPlaces) // JavaScript method called toFixed() that is called with numberOfDecimalPlaces
+                return formattedPrice
+            },
+            limitCharacters: function() {
+
             }
         }, // Adding new attribute
         computed: { // Computed properties are like data, but can be calculated from other pieces of data
@@ -212,13 +235,21 @@
                     this.errors.push('Select a media.')
                 }
 
+                if (this.complete == true ) {
+                    complete = "Completed"
+                } else {
+                    complete = "Not Completed"
+                }
+
 
                 if (this.errors.length == 0) {
                     let record = {
                         date: date, // From above
                         hours: this.hours,
                         type: this.type,
-                        medium: this.medium
+                        medium: this.medium,
+                        completed: this.complete,
+                        notes: this.note
                     }
 
                     // Push what the user selected into the activityRecords array above

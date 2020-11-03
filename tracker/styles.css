@@ -4,3 +4,15 @@
     /* If the amount of records exceed the size, then user can scoll through it */
     overflow: scroll;
 }
+
+.guitarChords {
+    background-color: lightgoldenrodyellow;
+}
+
+.guitarScales {
+    background-color: lightgray;
+}
+
+.guitarSweeps {
+    background-color: lightgreen;
+}
