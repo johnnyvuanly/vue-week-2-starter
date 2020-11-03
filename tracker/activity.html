@@ -110,13 +110,13 @@
                             <th>Notes</th>
                         </tr>
                         <!-- TODO use v-for to create one table row for each activity record -->
-                        <tr v-for="record in activityRecords" v-bind:class="{ guitarScales: types[0], guitarChords: types[1], guitarSweeps: types[2] }">
+                        <tr v-for="record in activityRecords" v-bind:class="{ guitarScales: record.type=='Scales', guitarChords: record.type=='Chords', guitarSweeps: record.type=='Sweep Picking' }">
                             <td>{{ record.date | shortDate }}</td>
                             <td>{{ record.hours | decimalPlaces(2) }}</td>
                             <td>{{ record.type }}</td>
                             <td>{{ record.medium }}</td>
-                            <td>{{ record.completed }}</td>
-                            <td>{{ record.notes }}</td>
+                            <td>{{ record.completedString }}</td>
+                            <td>{{ record.notes | limitCharacters }}</td>
                         </tr>
                     </table>
                 </div>
@@ -184,7 +184,8 @@
                 let formattedPrice = price.toFixed(numberOfDecimalPlaces) // JavaScript method called toFixed() that is called with numberOfDecimalPlaces
                 return formattedPrice
             },
-            limitCharacters: function() {
+            limitCharacters: function(text) {
+                return text.substring(0, 40) // Taking a slice out of the string, first character all the way until the character you designate
 
             }
         }, // Adding new attribute
@@ -249,6 +250,7 @@
                         type: this.type,
                         medium: this.medium,
                         completed: this.complete,
+                        completedString: complete, // This is a string 
                         notes: this.note
                     }
 
@@ -266,8 +268,12 @@
         }
     })
 
+    // Vue School
+    // Vue Mastery 
+
     </script>
 
 </body>
 
 </html>
+
